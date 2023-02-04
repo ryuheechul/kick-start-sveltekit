@@ -1,0 +1,9 @@
+diff --git a/.husky/pre-commit b/.husky/pre-commit
+new file mode 100755
+--- /dev/null
++++ b/.husky/pre-commit
+@@ -0,0 +1,4 @@
++#!/usr/bin/env sh
++. "$(dirname -- "$0")/_/husky.sh"
++
++npx lint-staged

@@ -1,0 +1,11 @@
+diff --git a/package.json b/package.json
+--- a/package.json
++++ b/package.json
+@@ -3,6 +3,7 @@
+   "version": "0.0.1",
+   "private": true,
+   "scripts": {
++    "prepare": "husky install",
+     "dev": "vite dev",
+     "build": "vite build",
+     "preview": "vite preview",
