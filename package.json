@@ -1,0 +1,24 @@
+{
+  "name": "kick-start-sveltekit",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Hopefully this bakes your svelekit project with minimal efforts",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryuheechul/kick-start-sveltekit.git"
+  },
+  "keywords": [
+    "svelte",
+    "start"
+  ],
+  "author": "Heechul Ryu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryuheechul/kick-start-sveltekit/issues"
+  },
+  "homepage": "https://github.com/ryuheechul/kick-start-sveltekit",
+  "dependencies": {
+    "fs-extra": "^11.1.0"
+  }
+}

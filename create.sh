@@ -1,21 +1,28 @@
 #!/usr/bin/env bash
 
+set -e
+
 script_d="$(dirname "$0")"
 script_abs_d="$(realpath "${script_d}")"
+
+patch_pkg_json="${script_abs_d}/patch-package-json.js"
+
 patch_d="${script_abs_d}/patches"
+
 patch_husky="${patch_d}/husky.patch"
 patch_makefile="${patch_d}/makefile.patch"
 patch_eslint="${patch_d}/eslintrc.cjs.patch"
 patch_prettier="${patch_d}/prettierrc.patch"
 patch_storybook_button="${patch_d}/storybook.button.patch"
 patch_storybook_preview="${patch_d}/storybook.preview.patch"
-patch_package_json_lint="${patch_d}/package.json.lint.patch"
-patch_package_json_husky="${patch_d}/package.json.husky.patch"
-patch_package_json_lint_staged="${patch_d}/package.json.lint-staged.patch"
 
 shopt -s globstar # https://unix.stackexchange.com/a/49917/396504
 
 new_project_name="${1:-my-sveltekit-polished}"
+config_file="${2:-"${script_abs_d}/cswc.mjs"}"
+
+# for ./patch-package-json.js to function properly
+pushd "${script_abs_d}"; npm i; popd
 
 git_add_and_diff ()
 {
@@ -31,7 +38,7 @@ echo deleting "${new_project_name}" while tests
 rm -rf "${new_project_name}"
 ## end of testing only
 
-yes | npm create svelte-with-config cswc.mjs "${new_project_name}"
+yes | npm create svelte-with-config "${config_file}" "${new_project_name}"
 
 # enter the generated project
 pushd "${new_project_name}"
@@ -59,10 +66,13 @@ git apply "${patch_prettier}"
 
 npm uninstall eslint-plugin-svelte3
 npm install --save-dev eslint-plugin-svelte eslint-plugin-prettier
-git add package-lock.json
+
+git_add_and_diff
+git commit -m 'Install eslint-plugin-prettier'
 
 git apply "${patch_eslint}"
-git apply "${patch_package_json_lint}"
+
+"${patch_pkg_json}" lint
 
 git_add_and_diff
 git commit -m 'Patch .prettierrc and .eslintrc.cjs package.json
@@ -78,10 +88,11 @@ git commit -m 'npm run lint:fix'
 ##### setup lint-stage and husky
 
 npm install --save-dev lint-staged
-git apply "${patch_package_json_lint_staged}"
+git add package.json
 
+"${patch_pkg_json}" lint-staged
 git apply "${patch_husky}"
-git apply "${patch_package_json_husky}"
+"${patch_pkg_json}" husky
 
 npm install husky --save-dev
 
