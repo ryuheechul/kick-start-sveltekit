@@ -4,15 +4,18 @@ script_d="$(dirname "$0")"
 script_abs_d="$(realpath "${script_d}")"
 patch_d="${script_abs_d}/patches"
 patch_husky="${patch_d}/husky.patch"
+patch_makefile="${patch_d}/makefile.patch"
 patch_eslint="${patch_d}/eslintrc.cjs.patch"
 patch_prettier="${patch_d}/prettierrc.patch"
+patch_storybook_button="${patch_d}/storybook.button.patch"
+patch_storybook_preview="${patch_d}/storybook.preview.patch"
 patch_package_json_lint="${patch_d}/package.json.lint.patch"
 patch_package_json_husky="${patch_d}/package.json.husky.patch"
 patch_package_json_lint_staged="${patch_d}/package.json.lint-staged.patch"
 
 shopt -s globstar # https://unix.stackexchange.com/a/49917/396504
 
-name="${1:-my-sveltekit-polished}"
+new_project_name="${1:-my-sveltekit-polished}"
 
 git_add_and_diff ()
 {
@@ -24,14 +27,14 @@ git_add_and_diff ()
 
 
 ## beginning of testing only
-echo deleting "${name}" while tests
-rm -rf "${name}"
+echo deleting "${new_project_name}" while tests
+rm -rf "${new_project_name}"
 ## end of testing only
 
-yes | npm create svelte-with-config cswc.mjs "${name}"
+yes | npm create svelte-with-config cswc.mjs "${new_project_name}"
 
 # enter the generated project
-pushd "${name}"
+pushd "${new_project_name}"
 
 ##### initialize with git
 git init
@@ -62,7 +65,7 @@ git apply "${patch_eslint}"
 git apply "${patch_package_json_lint}"
 
 git_add_and_diff
-git commit -m 'patch .prettierrc and .eslintrc.cjs package.json
+git commit -m 'Patch .prettierrc and .eslintrc.cjs package.json
 
 to rely on eslint to fix prettier formatting as well'
 
@@ -84,18 +87,39 @@ npm install husky --save-dev
 
 git_add_and_diff
 npm run prepare # trigger husky git hook installation
-git commit -m "setup husky and lint-staged"
+git commit -m "Setup husky and lint-staged"
 
 ##### add tailwindcss
 
 npx svelte-add@latest tailwindcss
 npm i
 git_add_and_diff
-git commit -m "add tailwindcss"
+git commit -m "Add tailwindcss"
 
 ##### setup Storybook 7
 
 yes | npx storybook@next init
 
 git_add_and_diff
-git commit -m "add storybook"
+git commit -m "Add storybook"
+
+git apply "${patch_storybook_preview}"
+git apply "${patch_storybook_button}"
+
+git_add_and_diff
+git commit -m "Patch for storybook"
+# when running storybook for the first time it might take time to function properly
+# or refresh once for the pages that have an error about '$$' blahblah
+
+
+##### add Makefile
+
+git apply "${patch_makefile}"
+git_add_and_diff
+git commit -m "Add Makefile"
+
+
+##### finale
+popd
+
+echo "you may \`cd ${new_project_name}\` to start coding"

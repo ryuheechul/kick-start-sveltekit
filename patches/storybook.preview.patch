@@ -1,0 +1,42 @@
+diff --git a/.eslintignore b/.eslintignore
+--- a/.eslintignore
++++ b/.eslintignore
+@@ -11,3 +11,4 @@ node_modules
+ pnpm-lock.yaml
+ package-lock.json
+ yarn.lock
++!.storybook
+diff --git a/.storybook/preview-head.html b/.storybook/preview-head.html
+--- a/.storybook/preview-head.html
++++ b/.storybook/preview-head.html
+@@ -1,3 +1,7 @@
++<!-- TODO: follow steps here to avoid using cdn one -->
++<!-- - https://tailwindcss.com/docs/installation -->
++<!-- - https://storybook.js.org/recipes/tailwindcss -->
++<script src="https://cdn.tailwindcss.com"></script>
+ <script>
+   window.global = window;
+-</script>
+\ No newline at end of file
++</script>
+diff --git a/.storybook/preview.ts b/.storybook/preview.ts
+--- a/.storybook/preview.ts
++++ b/.storybook/preview.ts
+@@ -1,9 +1,14 @@
+ export const parameters = {
+-  actions: { argTypesRegex: "^on[A-Z].*" },
++  actions: { argTypesRegex: '^on[A-Z].*' },
+   controls: {
+     matchers: {
+       color: /(background|color)$/i,
+       date: /Date$/,
+     },
+   },
+-}
+\ No newline at end of file
++  docs: {
++    canvas: {
++      sourceState: 'shown',
++    },
++  },
++};

@@ -1,0 +1,20 @@
+diff --git a/Makefile b/Makefile
+new file mode 100644
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1,15 @@
++.PHONY: run
++run: install
++	npm run dev -- --open
++
++.PHONY: install
++install:
++	npm i
++
++.PHONY: storybook
++storybook:
++	npm run storybook
++
++.PHONY: upgrade-storybook
++upgrade-storybook:
++	npx sb@next upgrade --prerelease
